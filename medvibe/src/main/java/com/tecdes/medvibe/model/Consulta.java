@@ -65,7 +65,7 @@ public Consulta(Long id, String dataHora, Long pacienteid, Long medicoid, Long e
         return enderecoid;
     }
 
-    public void setCEP( Long enderecoid) {
+    public void setEnderecoid( Long enderecoid) {
         this.enderecoid = enderecoid;
     }
 
