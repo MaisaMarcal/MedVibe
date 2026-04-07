@@ -1,5 +1,13 @@
 package com.tecdes.medvibe.dto;
 
-public record MedicoDTO(Long id, String nome, Long cpfid, Long crmid, String especialidade) {
+import lombok.Builder;
 
+@Builder // Permite criar o DTO de forma fluida no Service
+public record MedicoDTO(
+    Long id,
+    String nome,
+    String cpf,          // Alterado de Long para String (CPFs possuem zeros à esquerda)
+    String crm,          // Alterado de Long para String
+    String especialidade
+) {
 }

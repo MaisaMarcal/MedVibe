@@ -1,7 +1,7 @@
 package com.tecdes.medvibe.controller;
 
 import java.util.List;
-
+import lombok.RequiredArgsConstructor; // Import do Lombok
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,55 +11,40 @@ import com.tecdes.medvibe.service.MedicoService;
 
 @RestController
 @RequestMapping("/medicos")
+@RequiredArgsConstructor // Gera o construtor para campos 'final' (Requisito C)
 public class MedicoController {
 
     private final MedicoService medicoService;
 
-    // Injeção de dependência via construtor
-    public MedicoController(MedicoService medicoService) {
-        this.medicoService = medicoService;
-    }
-
-    // CREATE - criar médico
-    @PostMapping("/salvar")
+    // POST /medicos (Criar)
+    @PostMapping
     public ResponseEntity<MedicoDTO> criarMedico(@RequestBody MedicoDTO medicoDTO) {
-
         MedicoDTO medicoCriado = medicoService.criarMedico(medicoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(medicoCriado);
     }
 
-    // RESTORE - listar médicos
-    @GetMapping("/listar")
+    // GET /medicos (Listar)
+    @GetMapping
     public ResponseEntity<List<MedicoDTO>> listarMedicos() {
         List<MedicoDTO> medicos = medicoService.listarMedicos();
-
-        if (medicos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(medicos);
+        return medicos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(medicos);
     }
 
-    // UPDATE (PUT)
-    @PutMapping("put/{id}")
+    // PUT /medicos/{id} (Atualizar Total)
+    @PutMapping("/{id}")
     public ResponseEntity<MedicoDTO> atualizarMedicoPut(@PathVariable Long id, @RequestBody MedicoDTO medicoDTO) {
-
-        MedicoDTO medicoAtualizado = medicoService.atualizarMedicoPut(id, medicoDTO);
-        return ResponseEntity.ok(medicoAtualizado);
+        return ResponseEntity.ok(medicoService.atualizarMedicoPut(id, medicoDTO));
     }
 
-    // UPDATE (PATCH)
-    @PatchMapping("patch/{id}")
+    // PATCH /medicos/{id} (Atualizar Parcial)
+    @PatchMapping("/{id}")
     public ResponseEntity<MedicoDTO> atualizarMedicoPatch(@PathVariable Long id, @RequestBody MedicoDTO medicoDTO) {
-
-        MedicoDTO medicoAtualizado = medicoService.atualizarMedicoPatch(id, medicoDTO);
-        return ResponseEntity.ok(medicoAtualizado);
+        return ResponseEntity.ok(medicoService.atualizarMedicoPatch(id, medicoDTO));
     }
 
-    // DELETE
+    // DELETE /medicos/{id} (Remover)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarMedico(@PathVariable Long id) {
-
         medicoService.excluirMedico(id);
         return ResponseEntity.noContent().build();
     }

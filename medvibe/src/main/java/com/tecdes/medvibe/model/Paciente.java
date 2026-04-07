@@ -1,80 +1,29 @@
 package com.tecdes.medvibe.model;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-
+import jakarta.persistence.*;
+import lombok.*; // Requisito C
+import java.util.List;
 
 @Entity
-@Table(name = "paciente")  
+@Table(name = "paciente")
+@Getter @Setter               // Gera Getters e Setters
+@NoArgsConstructor            // Construtor vazio (obrigatório JPA)
+@AllArgsConstructor           // Construtor com todos os campos
+@Builder                      // Facilita a criação no Service
 public class Paciente {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private Long cpfid;
     private String idade;
     private String sintoma;
 
-    
-public Paciente() {
-    }
-
-public Paciente(Long id, String nome, Long cpfid, String idade, String sintoma) {
-    this.id= id;
-    this.nome =nome;
-    this.cpfid = cpfid;
-    this.idade = idade;
-    this.sintoma = sintoma;
-
+    // RELACIONAMENTO 1:N (Um paciente para muitas consultas)
+    // mappedBy: indica que o campo "paciente" na classe Consulta é o dono da relação
+    // cascade: Requisito D - Exclui as consultas se o paciente for deletado
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Consulta> consultas;
 }
-    // Getters e Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-    public Long getCPFid() {
-        return cpfid;
-    }
-
-    public void setCPFid(Long cpfid) {
-        this.cpfid = cpfid;
-    }
-    public String getIdade() {
-        return idade;
-    }
-
-    public void setIdade(String idade) {
-        this.idade = idade;
-
-    }
-    public String getSintoma() {
-        return sintoma;
-    }
-
-    public void setSintoma( String sintoma) {
-        this.sintoma = sintoma;
-    }
-
-    
-}
-
-    
-
-
-
