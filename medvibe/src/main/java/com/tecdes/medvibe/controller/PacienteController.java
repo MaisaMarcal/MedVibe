@@ -31,19 +31,19 @@ public class PacienteController {
     }
 
     // GET /pacientes/{id}
-    @GetMapping("/{id}")
+    @GetMapping("listar/{id}")
     public ResponseEntity<PacienteDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(pacienteService.buscarPorId(id));
     }
 
     // PUT /pacientes/{id}
-    @PutMapping("/{id}")
+    @PutMapping("/put/{id}")
     public ResponseEntity<PacienteDTO> atualizarPaciente(@PathVariable Long id, @RequestBody PacienteDTO pacienteDTO) {
         return ResponseEntity.ok(pacienteService.atualizarPacientePut(id, pacienteDTO));
     }
 
     // DELETE /pacientes/{id}
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletarPaciente(@PathVariable Long id) {
         pacienteService.excluirPaciente(id);
         return ResponseEntity.noContent().build();

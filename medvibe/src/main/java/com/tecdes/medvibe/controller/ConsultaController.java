@@ -17,7 +17,7 @@ public class ConsultaController {
     private final ConsultaService consultaService;
 
     // POST: Cadastrar novo registro [cite: 256]
-    @PostMapping
+    @PostMapping("/salvar")
     public ResponseEntity<ConsultaDTO> criarConsulta(@RequestBody ConsultaDTO consultaDTO) {
         // O Service agora deve validar se Medico e Paciente existem 
         ConsultaDTO consultaCriada = consultaService.criarConsulta(consultaDTO);
@@ -32,20 +32,20 @@ public class ConsultaController {
     }
 
     // GET: Buscar por ID específico [cite: 258]
-    @GetMapping("/{id}")
+    @GetMapping("/listar/{id}")
     public ResponseEntity<ConsultaDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(consultaService.buscarPorId(id));
     }
 
     // PUT: Atualizar dados existentes [cite: 259]
-    @PutMapping("/{id}")
+    @PutMapping("/put/{id}")
     public ResponseEntity<ConsultaDTO> atualizarConsulta(@PathVariable Long id, @RequestBody ConsultaDTO consultaDTO) {
         return ResponseEntity.ok(consultaService.atualizarConsultaPut(id, consultaDTO));
     }
     // No ConsultaController.java
 
     // DELETE: Remover um registro [cite: 260]
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletarConsulta(@PathVariable Long id) {
         consultaService.excluirConsulta(id);
         return ResponseEntity.noContent().build();

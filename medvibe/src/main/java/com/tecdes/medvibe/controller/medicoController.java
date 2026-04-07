@@ -19,29 +19,29 @@ public class MedicoController {
         this.medicoService = medicoService;
     }
 
-    @PostMapping
+    @PostMapping("/salvar")
     public ResponseEntity<MedicoDTO> criarMedico(@RequestBody MedicoDTO medicoDTO) {
         MedicoDTO medicoCriado = medicoService.criarMedico(medicoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(medicoCriado);
     }
 
-    @GetMapping
+    @GetMapping("/listar/{id}")
     public ResponseEntity<List<MedicoDTO>> listarMedicos() {
         List<MedicoDTO> medicos = medicoService.listarMedicos();
         return medicos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(medicos);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/put/{id}")
     public ResponseEntity<MedicoDTO> atualizarMedicoPut(@PathVariable Long id, @RequestBody MedicoDTO medicoDTO) {
         return ResponseEntity.ok(medicoService.atualizarMedicoPut(id, medicoDTO));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/patch/{id}")
     public ResponseEntity<MedicoDTO> atualizarMedicoPatch(@PathVariable Long id, @RequestBody MedicoDTO medicoDTO) {
         return ResponseEntity.ok(medicoService.atualizarMedicoPatch(id, medicoDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletarMedico(@PathVariable Long id) {
         medicoService.excluirMedico(id);
         return ResponseEntity.noContent().build();
