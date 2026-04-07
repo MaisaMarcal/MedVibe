@@ -1,38 +1,31 @@
 package com.tecdes.medvibe.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "consulta")
-@Getter @Setter               // Gera Getters e Setters automaticamente
-@NoArgsConstructor            // Gera construtor vazio (exigido pelo JPA)
-@AllArgsConstructor           // Gera construtor com todos os campos
-@Builder                      // Facilita a criação de objetos no Service
+@Table(name = "consultas")
 public class Consulta {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String dataHora;
 
-    // RELACIONAMENTOS (O coração da Etapa 2)
-
-    @ManyToOne(fetch = FetchType.EAGER) // Muitas consultas para um Paciente
-    @JoinColumn(name = "paciente_id")   // Nome da Coluna da FK no banco
-    private Paciente paciente;
-
-    @ManyToOne(fetch = FetchType.EAGER) // Muitas consultas para um Médico
-    @JoinColumn(name = "medico_id")     // Nome da Coluna da FK no banco
+    @ManyToOne
+    @JoinColumn(name = "medico_id")
     private Medico medico;
 
-    // Se você tiver uma entidade Endereco, use @OneToOne ou @ManyToOne aqui
-    private Long enderecoid; 
+    @ManyToOne
+    @JoinColumn(name = "paciente_id")
+    private Paciente paciente;
+
+    public Consulta() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getDataHora() { return dataHora; }
+    public void setDataHora(String dataHora) { this.dataHora = dataHora; }
+    public Medico getMedico() { return medico; }
+    public void setMedico(Medico medico) { this.medico = medico; }
+    public Paciente getPaciente() { return paciente; }
+    public void setPaciente(Paciente paciente) { this.paciente = paciente; }
 }

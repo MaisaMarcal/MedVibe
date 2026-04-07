@@ -1,120 +1,94 @@
 package com.tecdes.medvibe.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.tecdes.medvibe.dto.ConsultaDTO;
 import com.tecdes.medvibe.model.Consulta;
+import com.tecdes.medvibe.model.Medico;
+import com.tecdes.medvibe.model.Paciente;
 import com.tecdes.medvibe.repository.ConsultaRepository;
-
+import com.tecdes.medvibe.repository.MedicoRepository;
+import com.tecdes.medvibe.repository.PacienteRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ConsultaService {
 
     private final ConsultaRepository consultaRepository;
+    private final MedicoRepository medicoRepository;
+    private final PacienteRepository pacienteRepository;
 
-    public ConsultaService(ConsultaRepository consultaRepository) {
-        this.consultaRepository = consultaRepository;
+    // No ConsultaService.java
+
+public ConsultaDTO criarConsulta(ConsultaDTO dto) {
+    // Busca as entidades para garantir a integridade (Requisito Etapa 2)
+    Medico medico = medicoRepository.findById(dto.medicoId())
+            .orElseThrow(() -> new EntityNotFoundException("Médico não encontrado"));
+
+    Paciente paciente = pacienteRepository.findById(dto.pacienteId())
+            .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+
+    // Criando o objeto manualmente (Substitui o Builder que dava erro)
+    Consulta consulta = new Consulta();
+    consulta.setDataHora(dto.dataHora());
+    consulta.setMedico(medico);
+    consulta.setPaciente(paciente);
+
+    Consulta salva = consultaRepository.save(consulta);
+    return converterParaDTO(salva);
+}
+
+
+
+    // Método que o Controller chama na linha 37
+    public ConsultaDTO buscarPorId(Long id) {
+        Consulta consulta = consultaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada!"));
+        return converterParaDTO(consulta);
     }
 
-    // CREATE
-    public ConsultaDTO criarConsulta(ConsultaDTO consultaDTO) {
+    // Método que o Controller chama na linha 43
+    public ConsultaDTO atualizarConsultaPut(Long id, ConsultaDTO dto) {
+        Consulta consulta = consultaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada!"));
 
-        Consulta consulta = new Consulta();
-        consulta.setDataHora(consultaDTO.dataHora());
-        consulta.setPacienteid(consultaDTO.pacienteid());
-        consulta.setMedicoid(consultaDTO.medicoid());
-        consulta.setEnderecoid(consultaDTO.enderecoid());
+        // Validação de Integridade: Busca médico e paciente reais
+        Medico medico = medicoRepository.findById(dto.medicoId())
+                .orElseThrow(() -> new EntityNotFoundException("Médico não encontrado!"));
+        Paciente paciente = pacienteRepository.findById(dto.pacienteId())
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado!"));
 
-        Consulta consultaSalva = consultaRepository.save(consulta);
+        consulta.setDataHora(dto.dataHora());
+        consulta.setMedico(medico);
+        consulta.setPaciente(paciente);
 
-        return new ConsultaDTO(
-                consultaSalva.getId(),
-                consultaSalva.getDataHora(),
-                consultaSalva.getPacienteid(),
-                consultaSalva.getMedicoid(),
-                consultaSalva.getEnderecoid()
-        );
+        return converterParaDTO(consultaRepository.save(consulta));
     }
 
-    // READ
     public List<ConsultaDTO> listarConsultas() {
-
-        List<Consulta> consultas = consultaRepository.findAll();
-
-        return consultas.stream().map(c -> new ConsultaDTO(
-                c.getId(),
-                c.getDataHora(),
-                c.getPacienteid(),
-                c.getMedicoid(),
-                c.getEnderecoid()
-        )).toList();
+        return consultaRepository.findAll().stream().map(this::converterParaDTO).toList();
     }
 
-    // UPDATE (PUT)
-    public ConsultaDTO atualizarConsultaPut(Long id, ConsultaDTO consultaDTO) {
+    // Método auxiliar essencial para o Requisito B
 
-        Consulta consulta = consultaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada!"));
-
-        consulta.setDataHora(consultaDTO.dataHora());
-        consulta.setPacienteid(consultaDTO.pacienteid());
-        consulta.setMedicoid(consultaDTO.medicoid());
-        consulta.setEnderecoid(consultaDTO.enderecoid());
-
-        consultaRepository.save(consulta);
-
+    private ConsultaDTO converterParaDTO(Consulta c) {
         return new ConsultaDTO(
-                consulta.getId(),
-                consulta.getDataHora(),
-                consulta.getPacienteid(),
-                consulta.getMedicoid(),
-                consulta.getEnderecoid()
-        );
-    }
-
-    // UPDATE (PATCH)
-    public ConsultaDTO atualizarConsultaPatch(Long id, ConsultaDTO consultaDTO) {
-
-        Consulta consulta = consultaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada!"));
-
-        if (consultaDTO.dataHora() != null) {
-            consulta.setDataHora(consultaDTO.dataHora());
-        }
-
-        if (consultaDTO.pacienteid() != null) {
-            consulta.setPacienteid(consultaDTO.pacienteid());
-        }
-
-        if (consultaDTO.medicoid() != null) {
-            consulta.setMedicoid(consultaDTO.medicoid());
-        }
-
-        if (consultaDTO.enderecoid() != null) {
-            consulta.setEnderecoid(consultaDTO.enderecoid());
-        }
-
-        consultaRepository.save(consulta);
-
-        return new ConsultaDTO(
-                consulta.getId(),
-                consulta.getDataHora(),
-                consulta.getPacienteid(),
-                consulta.getMedicoid(),
-                consulta.getEnderecoid()
-        );
-    }
-
-    // DELETE
+        c.getId(), 
+        c.getDataHora(), 
+        c.getMedico().getId(), 
+        c.getPaciente().getId(),
+        c.getMedico().getNome(), 
+        c.getPaciente().getNome()
+    );
+}
+    
+    // Corrigindo o erro da linha 50 do Controller
     public void excluirConsulta(Long id) {
-
-        if (!consultaRepository.existsById(id)) {
-            throw new EntityNotFoundException("Consulta com id " + id + " não existe!");
-        }
-
-        consultaRepository.deleteById(id);
+    if (!consultaRepository.existsById(id)) {
+        throw new EntityNotFoundException("Consulta não encontrada");
     }
+    consultaRepository.deleteById(id);
+}
 }

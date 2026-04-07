@@ -42,6 +42,7 @@ public class ConsultaController {
     public ResponseEntity<ConsultaDTO> atualizarConsulta(@PathVariable Long id, @RequestBody ConsultaDTO consultaDTO) {
         return ResponseEntity.ok(consultaService.atualizarConsultaPut(id, consultaDTO));
     }
+    // No ConsultaController.java
 
     // DELETE: Remover um registro [cite: 260]
     @DeleteMapping("/{id}")
