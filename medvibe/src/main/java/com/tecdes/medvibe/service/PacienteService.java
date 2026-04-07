@@ -53,7 +53,7 @@ public class PacienteService {
         Paciente paciente = pacienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado!"));
 
-        paciente.setNome(dto.nome());
+        paciente.setNome(dto.nome());  
         paciente.setCpf(dto.cpf());
         paciente.setIdade(dto.idade());
         paciente.setSintoma(dto.sintoma());

@@ -3,6 +3,9 @@ package com.tecdes.medvibe.model;
 import jakarta.persistence.*;
 import java.util.List;
 
+import java.util.List;
+
+
 @Entity
 @Table(name = "pacientes")
 public class Paciente {
@@ -29,4 +32,5 @@ public class Paciente {
     public void setIdade(Integer idade) { this.idade = idade; }
     public String getSintoma() { return sintoma; }
     public void setSintoma(String sintoma) { this.sintoma = sintoma; }
+
 }
